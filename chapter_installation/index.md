@@ -6,54 +6,44 @@ we need to set you up with an environment for running Python,
 Jupyter notebooks, the relevant libraries,
 and the code needed to run the book itself.
 
-## Installing Miniconda
+## Installing JDK 11 (not jre)
 
-The simplest way to get going will be to install
-[Miniconda](https://conda.io/en/latest/miniconda.html). The Python 3.x version
-is required. You can skip the following steps if conda has already been installed.
-Download the corresponding Miniconda sh file from the website
-and then execute the installation from the command line
-using `sh <FILENAME> -b`. For macOS users:
+JDK 11 (or above are required) to run the examples provided in this folder.
 
-```bash
-# The file name is subject to changes
-sh Miniconda3-latest-MacOSX-x86_64.sh -b
+to confirm the java path is configured properly:
+
+```
+java --list-modules | grep "jdk.jshell"
+
+> jdk.jshell@12.0.1
 ```
 
-
-For Linux users:
-
-```bash
-# The file name is subject to changes
-sh Miniconda3-latest-Linux-x86_64.sh -b
+## Install jupyter notebook on python3
+Use the following command to install Jupyter Notebook in Python 3:
+```
+pip3 install jupyter
 ```
 
+## Install Java kernel for jupyter notebook
 
-Next, initialize the shell so we can run `conda` directly.
-
-```bash
-~/miniconda3/bin/conda init
-```
-
-
-Now close and re-open your current shell. You should be able to create a new
-environment as following:
+By default jupyter notebook runs on Python3, you need to install Java kernel to run DJL.
 
 ```bash
-conda create --name d2l -y
-```
+git clone https://github.com/frankfliu/IJava.git
+cd IJava/
+./gradlew installKernel
+``` 
 
-
-## Downloading the D2L Notebooks
+## Downloading the D2L-Java Notebooks
 
 Next, we need to download the code of this book. You can use the
 [link](https://d2l.ai/d2l-en-0.7.1.zip) to download and unzip the code.
 Alternatively, if you have `unzip` (otherwise run `sudo apt install unzip`) available:
 
 ```bash
-mkdir d2l-en && cd d2l-en
+mkdir d2l-java && cd d2l-java
 curl https://d2l.ai/d2l-en.zip -o d2l-en.zip
-unzip d2l-en.zip && rm d2l-en.zip
+unzip d2l-java.zip && rm d2l-java.zip
 ```
 
 
@@ -66,36 +56,9 @@ conda install python=3.7 pip -y
 ```
 
 
-## Installing MXNet and the `d2l` Package
+## Running jupyter notebook
 
-Before installing MXNet, please first check
-whether or not you have proper GPUs on your machine
-(the GPUs that power the display on a standard laptop
-do not count for our purposes).
-If you are installing on a GPU server,
-proceed to :ref:`subsec_gpu` for instructions
-to install a GPU-supported MXNet.
-
-Otherwise, you can install the CPU version.
-That will be more than enough horsepower to get you
-through the first few chapters but you will want
-to access GPUs before running larger models.
-
-```bash
-pip install mxnet==1.6.0
-```
-
-
-We also install the `d2l` package that encapsulates frequently used
-functions and classes in this book.
-
-```bash
-pip install git+https://github.com/d2l-ai/d2l-en
-
-```
-
-
-Once they are installed, we now open the Jupyter notebook by running:
+Once above dependencies are installed, we now open the Jupyter notebook by running:
 
 ```bash
 jupyter notebook
@@ -103,58 +66,32 @@ jupyter notebook
 
 
 At this point, you can open http://localhost:8888 (it usually opens automatically) in your Web browser. Then we can run the code for each section of the book.
-Please always execute `conda activate d2l` to activate the runtime environment
-before running the code of the book or updating MXNet or the `d2l` package.
-To exit the environment, run `conda deactivate`.
+Remember to switch the Kernel to Java instead of Python3.
 
+## Adding dependencies on DJL and MXNet engine
 
-## Upgrading to a New Version
+You can add DJL dependencies and MXNet engine from maven directly:
 
-Both this book and MXNet keep being improved. Please check a new version from time to time.
+```java
+// Add the snapshot repository to get the DJL snapshot artifacts
+// %mavenRepo snapshots https://oss.sonatype.org/content/repositories/snapshots/
 
-1. The URL https://d2l.ai/d2l-en.zip always points to the latest contents.
-2. Please upgrade the `d2l` package by `pip install d2l --upgrade`.
-3. For the CPU version, MXNet can be upgraded by `pip install -U --pre mxnet`.
+// Add the maven dependencies
+%maven ai.djl:api:0.4.0
+%maven org.slf4j:slf4j-api:1.7.26
+%maven org.slf4j:slf4j-simple:1.7.26
+        
+// See https://github.com/awslabs/djl/blob/master/mxnet/mxnet-engine/README.md
+// for more MXNet library selection options
+%maven ai.djl.mxnet:mxnet-native-auto:1.6.0
+```
+
+Now you can import and run different modules in DJL.
 
 
 ## GPU Support
 
-:label:`subsec_gpu`
-
-By default, MXNet is installed without GPU support
-to ensure that it will run on any computer (including most laptops).
-Part of this book requires or recommends running with GPU.
-If your computer has NVIDIA graphics cards and has installed [CUDA](https://developer.nvidia.com/cuda-downloads),
-then you should install a GPU-enabled MXNet.
-If you have installed the CPU-only version,
-you may need to remove it first by running:
-
-```bash
-pip uninstall mxnet
-```
-
-
-Then we need to find the CUDA version you installed.
-You may check it through `nvcc --version` or `cat /usr/local/cuda/version.txt`.
-Assume that you have installed CUDA 10.1,
-then you can install MXNet
-with the following command:
-
-```bash
-# For Windows users
-pip install mxnet-cu101==1.6.0b20190926
-
-# For Linux and macOS users
-pip install mxnet-cu101==1.6.0
-```
-
-
-Like the CPU version, the GPU-enabled MXNet can be upgraded by
-`pip install -U --pre mxnet-cu101`.
-You may change the last digits according to your CUDA version,
-e.g., `cu100` for CUDA 10.0 and `cu90` for CUDA 9.0.
-You can find all available MXNet versions via `pip search mxnet`.
-
+TBD
 
 ## Exercises
 
