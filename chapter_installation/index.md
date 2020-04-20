@@ -2,7 +2,7 @@
 :label:`chap_installation`
 
 In order to get you up and running for hands-on learning experience,
-we need to set you up with an environment for running Python,
+we need to set you up with an environment for running Java,
 Jupyter notebooks, the relevant libraries,
 and the code needed to run the book itself.
 
@@ -44,15 +44,6 @@ Alternatively, if you have `unzip` (otherwise run `sudo apt install unzip`) avai
 mkdir d2l-java && cd d2l-java
 curl https://d2l.ai/d2l-en.zip -o d2l-en.zip
 unzip d2l-java.zip && rm d2l-java.zip
-```
-
-
-Now we will want to activate the `d2l` environment and install `pip`.
-Enter `y` for the queries that follow this command.
-
-```bash
-conda activate d2l
-conda install python=3.7 pip -y
 ```
 
 
